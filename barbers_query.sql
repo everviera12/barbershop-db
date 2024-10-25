@@ -1,0 +1,55 @@
+CREATE TABLE barbers (
+    id SERIAL PRIMARY KEY,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    phone VARCHAR(15) NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    experience_years INTEGER NOT NULL,  
+    street VARCHAR(100) NOT NULL,
+    neighborhood VARCHAR(100) NOT NULL,
+    municipality VARCHAR(100) NOT NULL,
+    state VARCHAR(100) NOT NULL,
+    zip VARCHAR(10) NOT NULL CHECK (zip ~ '^[0-9]{5}$'), 
+    profile_picture VARCHAR(255) NOT NULL,
+    registration_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+    status BOOLEAN DEFAULT TRUE NOT NULL,  
+    working_hours JSONB NOT NULL          
+);
+INSERT INTO barbers (
+    first_name,
+    last_name,
+    email,
+    phone,
+    password,
+    experience_years,
+    street,
+    neighborhood,
+    municipality,
+    state,
+    zip,
+    profile_picture,
+    working_hours
+) VALUES (
+    'Carlos',
+    'Martinez',
+    'carlos.martinez@example.com',
+    '5559876543',
+    'hashed_password',  
+    5,                  
+    'Argentina 5407',
+    'Villa Olimpica',
+    'Guadalupe',
+    'Nuevo Leon',
+    '67183',
+    'https://assets.nicepagecdn.com/0d46e010/306342/images/8a4f31515cd189882cdef448dda088a3.jpeg',
+    '{
+        "Monday": "09:00-17:00",
+        "Tuesday": "09:00-17:00",
+        "Wednesday": "09:00-17:00",
+        "Thursday": "09:00-19:00",
+        "Friday": "09:00-19:00",
+        "Saturday": "10:00-15:00",
+        "Sunday": "Closed"
+    }'::JSONB
+);
