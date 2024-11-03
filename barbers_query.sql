@@ -16,40 +16,88 @@ CREATE TABLE barbers (
     status BOOLEAN DEFAULT TRUE NOT NULL,  
     working_hours JSONB NOT NULL          
 );
-INSERT INTO barbers (
-    first_name,
-    last_name,
-    email,
-    phone,
-    password,
-    experience_years,
-    street,
-    neighborhood,
-    municipality,
-    state,
-    zip,
-    profile_picture,
-    working_hours
-) VALUES (
-    'Carlos',
-    'Martinez',
-    'carlos.martinez@example.com',
-    '5559876543',
-    'hashed_password',  
-    5,                  
-    'Argentina 5407',
-    'Villa Olimpica',
-    'Guadalupe',
-    'Nuevo Leon',
-    '67183',
-    'https://assets.nicepagecdn.com/0d46e010/306342/images/8a4f31515cd189882cdef448dda088a3.jpeg',
-    '{
-        "Monday": "09:00-17:00",
-        "Tuesday": "09:00-17:00",
-        "Wednesday": "09:00-17:00",
-        "Thursday": "09:00-19:00",
-        "Friday": "09:00-19:00",
-        "Saturday": "10:00-15:00",
-        "Sunday": "Closed"
-    }'::JSONB
-);
+
+-- sp to insert barber
+CREATE OR REPLACE PROCEDURE insert_barber(
+    first_name VARCHAR,
+    last_name VARCHAR,
+    email VARCHAR,
+    phone VARCHAR,
+    password VARCHAR,
+    experience_years INTEGER,
+    street VARCHAR,
+    neighborhood VARCHAR,
+    municipality VARCHAR,
+    state VARCHAR,
+    zip VARCHAR,
+    profile_picture VARCHAR,
+    working_hours JSONB
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    INSERT INTO barbers (first_name, last_name, email, phone, password, experience_years, 
+                          street, neighborhood, municipality, state, zip, profile_picture, 
+                          working_hours)
+    VALUES (first_name, last_name, email, phone, password, experience_years, 
+            street, neighborhood, municipality, state, zip, profile_picture, 
+            working_hours);
+END;
+$$;
+
+
+-- sp to update barber
+CREATE OR REPLACE PROCEDURE update_barber(
+    barber_id INTEGER,
+    first_name VARCHAR DEFAULT NULL,
+    last_name VARCHAR DEFAULT NULL,
+    email VARCHAR DEFAULT NULL,
+    phone VARCHAR DEFAULT NULL,
+    password VARCHAR DEFAULT NULL,
+    experience_years INTEGER DEFAULT NULL,
+    street VARCHAR DEFAULT NULL,
+    neighborhood VARCHAR DEFAULT NULL,
+    municipality VARCHAR DEFAULT NULL,
+    state VARCHAR DEFAULT NULL,
+    zip VARCHAR DEFAULT NULL,
+    profile_picture VARCHAR DEFAULT NULL,
+    working_hours JSONB DEFAULT NULL
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    UPDATE barbers
+    SET first_name = COALESCE(first_name, first_name),
+        last_name = COALESCE(last_name, last_name),
+        email = COALESCE(email, email),
+        phone = COALESCE(phone, phone),
+        password = COALESCE(password, password),
+        experience_years = COALESCE(experience_years, experience_years),
+        street = COALESCE(street, street),
+        neighborhood = COALESCE(neighborhood, neighborhood),
+        municipality = COALESCE(municipality, municipality),
+        state = COALESCE(state, state),
+        zip = COALESCE(zip, zip),
+        profile_picture = COALESCE(profile_picture, profile_picture),
+        working_hours = COALESCE(working_hours, working_hours)
+    WHERE id = barber_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Barber with ID % not found', barber_id;
+    END IF;
+END;
+$$;
+
+
+-- sp to delete barber
+CREATE OR REPLACE PROCEDURE delete_barber(
+    barber_id INTEGER
+)
+LANGUAGE plpgsql AS $$
+BEGIN
+    DELETE FROM barbers
+    WHERE id = barber_id;
+
+    IF NOT FOUND THEN
+        RAISE EXCEPTION 'Barber with ID % not found', barber_id;
+    END IF;
+END;
+$$;
